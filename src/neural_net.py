@@ -21,7 +21,7 @@ class Net(object):
 			a = self.sigmoid(np.dot(w, a) + b)
 		return a
 
-	def train(self, training_data, test_data, learning_rate):
+	def train(self, training_data, learning_rate):
 		# shuffle data to minimize potential for overfit
 		random.shuffle(training_data)
 		
@@ -36,8 +36,6 @@ class Net(object):
 			self.weights = [w - learning_rate * nw for w, nw in zip(self.weights, delta_weight_gradient)]
 			self.biases = [b - learning_rate * nb for b, nb in zip(self.biases, delta_bias_gradient)]
 			self.imagined_inputs = [i - learning_rate * nw for i, nw in zip(self.imagined_inputs, delta_weight_gradient)]
-			
-		print "{0}% correct!".format((float(self.evaluate(test_data)) / float(len(test_data))) * 100.0)
 
 	def backprop(self, image, target):
 		bias_gradient = [np.zeros(b.shape) for b in self.biases]
@@ -114,13 +112,13 @@ class Net(object):
 		print "{0}% correct!".format((float(self.evaluate(test_data)) / float(len(test_data))) * 100.0)
 		
 	def save(self):
-		with open('weights_file', 'wb') as wf:
+		with open('../data/weights_file', 'wb') as wf:
 			pickle.dump(self.weights, wf)
-		with open('biases_file', 'wb') as bf:
+		with open('../data/biases_file', 'wb') as bf:
 			pickle.dump(self.biases, bf)
 		
 	def load(self):
-		with open('weights_file', 'rb') as wf:
+		with open('../data/weights_file', 'rb') as wf:
 			self.weights = pickle.load(wf)
-		with open('biases_file', 'rb') as bf:
+		with open('../data/biases_file', 'rb') as bf:
 			self.biases = pickle.load(bf)
