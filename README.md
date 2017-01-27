@@ -60,7 +60,7 @@ $ python
 >>> network.test(test_data)
 ```
 
-#### Imagine the input of an output using `imagine()`.  This is like asking 'network' the question 
+#### Imagine the input of an output using `imagine()`.  This is like asking `network` the question 
 
 > "Hey, I have trained you to be able to classify a 3.  Now, I'm curious, what do you think a 3 looks like?".
 
