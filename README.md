@@ -36,7 +36,7 @@ $ python
 >>> training_data, validation_data, test_data = mnist_loader.load_data_wrapper()
 ```
 
-#### Instantiate a network.  Note: If you intend to load a network, make sure to instantiate a network of the same size of what is to be loaded.  Default shown below
+#### Instantiate a network.  Note: If you intend to load a network, make sure to instantiate a network of the same size as what is to be loaded.  Default shown below
 
 ```python
 >>> network = neural_net.Net([784, 30, 10])
