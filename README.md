@@ -1,4 +1,6 @@
 # A Neural Network for the MNIST Dataset
+![alt tag](https://github.com/nathansegan/mnist_neural_network/blob/master/scraps/number.jpg)
+
 A neural network to classify the handwritten digits 0-9 in the MNIST dataset.
 
 ## Data
@@ -67,6 +69,8 @@ $ python
 ```python
 >>> network.imagine(3)
 ```
+
+![alt tag](https://github.com/nathansegan/mnist_neural_network/blob/master/scraps/3.png)
 
 Think of the output like a heatmap that indicates what pixels are most important in differentiating a given digit from any other digit.
 
