@@ -1,5 +1,5 @@
-# mnist_neural_network
-A neural network to classify the handwritten digits 0-9 for the MNIST dataset.
+# A Neural Network for the MNIST Dataset
+A neural network to classify the handwritten digits 0-9 in the MNIST dataset.
 
 ## Data
 
