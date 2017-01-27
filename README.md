@@ -68,7 +68,7 @@ $ python
 >>> network.imagine(3)
 ```
 
-#### Think of the output like a heatmap that indicates what pixels are most important in differentiating a given digit from any other digit.
+Think of the output like a heatmap that indicates what pixels are most important in differentiating a given digit from any other digit.
 
 #### To save and load 'network', simply use `save() ` and `load()` like
 
