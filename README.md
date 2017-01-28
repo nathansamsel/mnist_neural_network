@@ -126,27 +126,28 @@ Using the sigmoid activation function:
 ## Forward Pass
 Input pattern is applied and the output is calculated
 
-1. Calculate the input to the hidden layer neurons
+
+#### Calculate the input to the hidden layer neurons
 ```math
 in_A = W_ΩA * Ω + W_λA * λ
 in_B = W_ΩB * Ω + W_λB * λ
 in_C = W_ΩC * Ω + W_λC * λ
 ```
 
-2. Feed inputs of hidden layer neurons through the activation function
+#### Feed inputs of hidden layer neurons through the activation function
 ```math
 out_A = 1 / (1 + e^( -1 * in_A))
 out_B = 1 / (1 + e^( -1 * in_B))
 out_C = 1 / (1 + e^( -1 * in_C))
 ```
 
-3. Multiply the hidden layer outputs by the corresponding weights to calculate the inputs to the output layer neurons
+#### Multiply the hidden layer outputs by the corresponding weights to calculate the inputs to the output layer neurons
 ```math
 in_α = out_A * W_Aα + out_B * W_Bα + out_C * W_Cα
 in_β = out_A * W_Aβ + out_B * W_Bβ + out_C * W_Cβ
 ```
 
-4. Feed inputs of output layer neurons through the activation function
+#### Feed inputs of output layer neurons through the activation function
 ```math
 out_α = 1 / (1 + e^( -1 * in_α))
 out_β = 1 / (1 + e^( -1 * in_β))
@@ -158,12 +159,13 @@ Error of each neuron is calculated and the error is used to mathematically chang
 
 _ = subscript, W+ = new weight, W = old weight, δ = error, η = learning rate.
 
-1. Calculate errors of output neurons
+#### Calculate errors of output neurons
 ```math
 δ_α = out_α * (1 - out_α) * (Target_α - out_α)
 δ_β = out_β * (1 - out_β) * (Target_β - out_β)
 ```
-2. Change output layer weights
+
+#### Change output layer weights
 ```math
 W+_Aα = W_Aα + η * δα * out_A
 W+_Aβ = W_Aβ + η * δβ * out_A
@@ -175,14 +177,14 @@ W+_Cα = W_Cα + η * δα * out_C
 W+_Cβ = W_Cβ + η * δβ * out_C
 ```
 
-3. Calculate (back-propagate) hidden layer errors
+#### Calculate (back-propagate) hidden layer errors
 ```math
 δ_A = out_A * (1 – out_A) * (δ_α * W_Aα + δ_β * W_Aβ)
 δ_B = out_B * (1 – out_B) * (δ_α * W_Bα + δ_β * W_Bβ)
 δ_C = out_C * (1 – out_C) * (δ_α * W_Cα + δ_β * W_Cβ)
 ```
 
-4. Change hidden layer weights
+#### Change hidden layer weights
 ```math
 W+_λA = W_λA + η * δ_A * in_λ 
 W+_ΩA = W_ΩA + η * δ_A * in_Ω
