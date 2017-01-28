@@ -38,13 +38,14 @@ $ python
 >>> training_data, validation_data, test_data = mnist_loader.load_data_wrapper()
 ```
 
-#### Instantiate a network.  Note: If you intend to load a network, make sure to instantiate a network of the same size as what is to be loaded.  Default shown below
+#### Instantiate a network 
+Note: If you intend to load a network, make sure to instantiate a network of the same size as what is to be loaded.  Default shown below
 
 ```python
 >>> network = neural_net.Net([784, 30, 10])
 ```
 
-#### From here, you can load a saved network or you can train this 'network' from scratch. To load a previously saved network
+#### From here, you can load a saved network or you can train `network` from scratch. To load a previously saved network
 
 ```python
 >>> network.load()
@@ -86,7 +87,7 @@ Think of the output like a heatmap that indicates what pixels are most important
 
 # Requirements
 
-All code was developed using Python 2.7.12 on an Ubuntu 16.04 LTS system.  Libraries used can be seen at top of source files in import statements
+All code was developed using **Python 2.7.12** on an Ubuntu 16.04 LTS system.  Libraries used can be seen at top of source files in import statements
 
 # Credits
 
