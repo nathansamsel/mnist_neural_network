@@ -1,4 +1,4 @@
-# n-Layer Neural Network using Backpropagation
+# N-Layer Neural Network using Backpropagation
 ![alt tag](https://github.com/nathansegan/mnist_neural_network/blob/master/scraps/number.jpg)
 
 A neural network to classify the handwritten digits 0-9 in the MNIST dataset.
@@ -66,6 +66,8 @@ Each index in the array input represents a layer in the network with the first a
 >>> network = neural_net.Net([784, 20, 30, 10])
 ```
 
+Note: To imagine inputs, the network size can only be 3 for now (input, 1 hidden layer, output).  Will be expanded soon to accomodate n-layer.
+
 
 #### From here, you can load a saved network or you can train `network` from scratch. To load a previously saved network
 
@@ -80,6 +82,7 @@ Each index in the array input represents a layer in the network with the first a
 >>> network.train(training_data, 3.0)
 ```
 
+Note: I have gotten up to a 92.5% success rate on `test_data` with enough training with current implementation.  Improvements coming soon.
 
 #### Test the accuracy of `network` against `test_data` using
 
