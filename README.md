@@ -84,6 +84,10 @@ Think of the output like a heatmap that indicates what pixels are most important
 >>> network.load()
 ```
 
+# Requirements
+
+All code was developed using Python 2.7.12 on an Ubuntu 16.04 LTS system.  Libraries used can be seen at top of source files in import statements
+
 # Credits
 
 MNIST Data and loader borrowed from [mnielsen](https://github.com/mnielsen/neural-networks-and-deep-learning)
