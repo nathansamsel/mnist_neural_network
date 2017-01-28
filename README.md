@@ -193,4 +193,5 @@ W+_ΩC = W_ΩC + η * δ_C * in_Ω
 # Credits
 
 MNIST Data and loader borrowed from [mnielsen](https://github.com/mnielsen/neural-networks-and-deep-learning)
+
 Network image and math for backpropagation from [here](https://www.fer.unizg.hr/_download/repository/BP_chapter3_-_bp.pdf)
