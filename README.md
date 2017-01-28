@@ -196,6 +196,13 @@ W+_λC = W_λC + η * δ_C * in_λ
 W+_ΩC = W_ΩC + η * δ_C * in_Ω
 ```
 
+## Solving for inputs
+> "Hey, I have trained you to be able to classify a 3.  Now, I'm curious, what do you think a 3 looks like?".
+
+Note: Assuming a trained network with weights, biases, and desired outputs provided.
+
+To be completed soon...
+
 
 # Credits
 
