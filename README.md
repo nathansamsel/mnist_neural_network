@@ -91,8 +91,9 @@ Note: I have gotten up to a 92.5% success rate on `test_data` with enough traini
 ```
 
 
-#### Imagine the input of an output using `imagine()`.  This is like asking `network` the question 
+#### Imagine the input of an output using `imagine()`
 
+This is like asking `network` the question 
 > "Hey, I have trained you to be able to classify a 3.  Now, I'm curious, what do you think a 3 looks like?".
 
 ```python
