@@ -9,6 +9,17 @@ MNIST dataset stored in [data/mnist.pkl.gz](https://github.com/nathansegan/mnist
 
 Network weights and biases can be saved to and loaded from files in a pickled format using `save()` and ` load()` functions.  Weights and biases are saved into [data/weights_file](https://github.com/nathansegan/mnist_neural_network/tree/master/data) and [data/biases_file](https://github.com/nathansegan/mnist_neural_network/tree/master/data).
 
+## Dependencies
+
+All code was developed using **Python 2.7.12** on an Ubuntu 16.04 LTS system.
+
+Dependencies
+* Numpy
+* Image
+* pickle
+* random
+* gzip
+
 ## Code
 
 ### To test currently saved network, run
@@ -84,10 +95,6 @@ Think of the output like a heatmap that indicates what pixels are most important
 ```python
 >>> network.load()
 ```
-
-# Requirements
-
-All code was developed using **Python 2.7.12** on an Ubuntu 16.04 LTS system.  Libraries used can be seen at top of source files in import statements
 
 # Credits
 
