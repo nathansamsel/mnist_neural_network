@@ -114,6 +114,53 @@ Think of the output like a heatmap that indicates what pixels are most important
 >>> network.load()
 ```
 
+# Backpropogation Process
+
+![alt tag](https://github.com/nathansegan/mnist_neural_network/blob/master/scraps/sample_network.png)
+
+## Forward Pass
+Input pattern is applied and the output is calculated
+
+## Reverse Pass
+Error of each neuron is calculated and the error is used to mathematically change the weights to minimize them, repeatedly.
+_ = subscript, W+ = new weight, W = old weight, δ = error, η = learning rate.
+
+1. Calculate errors of output neurons
+```math
+δ_α = out_α (1 - out_α) (Target_α - out_α)
+δ_β = out_β (1 - out_β) (Target_β - out_β)
+```
+2. Change output layer weights
+```math
+W+_Aα = W_Aα + η * δα * out_A
+W+_Aβ = W_Aβ + η * δβ * out_A
+
+W+_Bα = W_Bα + η * δα * out_B
+W+_Bβ = W_Bβ + η * δβ * out_B
+
+W+_Cα = W_Cα + η * δα * out_C
+W+_Cβ = W_Cβ + η * δβ * out_C
+```
+
+3. Calculate (back-propagate) hidden layer errors
+```math
+δ_A = out_A * (1 – out_A) * (δ_α * W_Aα + δ_β * W_Aβ)
+δ_B = out_B * (1 – out_B) * (δ_α * W_Bα + δ_β * W_Bβ)
+δ_C = out_C * (1 – out_C) * (δ_α * W_Cα + δ_β * W_Cβ)
+```
+
+4. Change hidden layer weights
+```math
+W+_λA = W_λA + η * δ_A * in_λ 
+W+_ΩA = W_ΩA + η * δ_A * in_Ω
+
+W+_λB = W_λB + η * δ_B * in_λ 
+W+_ΩB = W_ΩB + η * δ_B * in_Ω
+
+W+_λC = W_λC + η * δ_C * in_λ
+W+_ΩC = W_ΩC + η * δ_C * in_Ω
+```
 # Credits
 
 MNIST Data and loader borrowed from [mnielsen](https://github.com/mnielsen/neural-networks-and-deep-learning)
+Network image and math for backpropagation from [here](https://www.fer.unizg.hr/_download/repository/BP_chapter3_-_bp.pdf)
