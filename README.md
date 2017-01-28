@@ -118,6 +118,11 @@ Think of the output like a heatmap that indicates what pixels are most important
 
 ![alt tag](https://github.com/nathansegan/mnist_neural_network/blob/master/scraps/sample_network.png)
 
+Using the sigmoid activation function:
+```math
+1 / (1 + e(-z))
+```
+
 ## Forward Pass
 Input pattern is applied and the output is calculated
 
