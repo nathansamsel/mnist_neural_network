@@ -75,7 +75,7 @@ Note: If you intend to load a network, make sure to instantiate a network of the
 
 Think of the output like a heatmap that indicates what pixels are most important in differentiating a given digit from any other digit.
 
-#### To save and load 'network', simply use `save() ` and `load()` like
+#### To save and load `network`, simply use `save() ` and `load()` like
 
 ```python
 >>> network.save()
