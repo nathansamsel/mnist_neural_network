@@ -1,9 +1,10 @@
-import random
 import numpy as np
+import random
 import pickle
-from PIL import Image
+import Image
+import time
 
-np.seterr(all='ignore')
+#np.seterr(all='ignore')
 
 class Net(object):
 
@@ -12,30 +13,65 @@ class Net(object):
 		self.num_layers = len(sizes)
 		self.biases = [np.random.randn(y, 1) for y in sizes[1:]]
 		self.weights = [np.random.randn(y,x) for x, y in zip(sizes[:-1], sizes[1:])]
-		self.imagined_inputs = [np.zeros((784))]
+		# biases[0].shape = (30, 1) -- biases[1].shape = (10, 1)
+		# weights[0].shape = (30, 784) -- weights[1].shape = (10, 30)
 		
 	def feedforward(self, a):
         # Return the output of the network if 'a' is input
         # where a is the vector of activations
 		for b, w in zip(self.biases, self.weights):
-			a = self.sigmoid(np.dot(w, a) + b)
+			a = self.sigmoid(np.dot(w, a))
 		return a
 
-	def train(self, training_data, learning_rate):
+	def train(self, training_data, test_data, learning_rate):
 		# shuffle data to minimize potential for overfit
 		random.shuffle(training_data)
 		
 		# loop through entire set of training data
 		for training_example in training_data:
 			
-			# do backprop on training example
-			(image, target) = training_example
-			delta_bias_gradient, delta_weight_gradient = self.backprop(image, target)
+			inputs, target = training_example
 			
-			# update weights
-			self.weights = [w - learning_rate * nw for w, nw in zip(self.weights, delta_weight_gradient)]
-			self.biases = [b - learning_rate * nb for b, nb in zip(self.biases, delta_bias_gradient)]
-			self.imagined_inputs = [i - learning_rate * nw for i, nw in zip(self.imagined_inputs, delta_weight_gradient)]
+			# Forward Pass
+			
+			# calculate input to hidden layer neurons
+			in_hlayer = np.dot(self.weights[0], inputs)
+			
+			# Feed inputs of hidden layer neurons through the activation function
+			out_hlayer = np.array([self.sigmoid(z) for z in in_hlayer]).reshape(30,)
+
+			# Multiply the hidden layer outputs by the corresponding weights to calculate the inputs to the output layer neurons
+			in_olayer = np.dot(self.weights[1], out_hlayer.transpose())
+
+			# Feed inputs of output layer neurons through the activation function
+			out_olayer = np.array([self.sigmoid(z) for z in in_olayer])
+			
+			# Reverse Pass			
+			
+			# Calculate errors of output neurons
+			error_olayer = np.multiply(np.multiply(out_olayer, np.subtract(np.add(np.zeros((10,)), 1.0), out_olayer)), np.subtract(target[0], out_olayer))
+			
+			# Change output layer weights	
+			for weight in range(0, 9):	
+				for neuron in range(0, 29):
+					self.weights[1][weight][neuron] = self.weights[1][weight][neuron] + learning_rate * error_olayer[weight] * out_hlayer[neuron]
+
+			# backprop hidden layer error
+			error_hlayer = np.zeros((30,))
+			for weight in range(0, 9):
+				for neuron in range(0, 29):
+					total = 0
+					for x,y in zip(error_olayer, self.weights[1][weight]):
+						total += x+y
+					error_hlayer[neuron] = out_hlayer[neuron] * (1 - out_hlayer[neuron]) * total
+
+			# change hidden layer weights
+			for weight in range(0, 783):
+				for neuron in range(0, 29):
+						self.weights[0][neuron][weight] = self.weights[0][neuron][weight] + learning_rate * error_hlayer[neuron] * inputs[weight]
+
+			self.test_c(test_data)
+			
 
 	def backprop(self, image, target):
 		bias_gradient = [np.zeros(b.shape) for b in self.biases]
@@ -70,6 +106,10 @@ class Net(object):
 		# hidden layer inverse sigmoid = learning_rate * (activations - target) * (sigmoid(z)) * (1 - sigmoid(z))
 		h_layer_inv_sig = np.array([3.0 * self.cost_derivative(i, output) * self.sigmoid_derivative(i) for i in h_layer])
 		input_layer = np.dot(h_layer_inv_sig.transpose(), self.weights[0])
+		#input_layer_slim = [x[0] for x in input_layer]
+		#self.evaluate_one(input_layer.transpose(), x)
+		#print "{0}".format(len(input_layer_slim))
+		#print "{0}".format(test_data.shape)
 		im = Image.new("RGB", (28, 28), "white")
 		im.mode = "L"
 		pix = im.load()
@@ -108,9 +148,22 @@ class Net(object):
 		test_results = [(np.argmax(self.feedforward(x)), y) for (x, y) in test_data]
 		return sum(int(x == y) for (x, y) in test_results)
 		
+	def evaluate_one(self, test_data, x):
+		#return np.argmax(self.feedforward(test_data)) == x 
+		print"{0}".format()
+	
 	def test(self, test_data):
 		print "{0}% correct!".format((float(self.evaluate(test_data)) / float(len(test_data))) * 100.0)
 		
+	def test_c(self, test_data):
+		a = []
+		out = []
+		for z in np.dot(test_data[0], self.weights[0]):
+			a.append(self.sigmoid(z))
+		for z in np.dot(a, self.weights[1]):
+			out.append(self.sigmoid(z))
+		
+	
 	def save(self):
 		with open('../data/weights_file', 'wb') as wf:
 			pickle.dump(self.weights, wf)
