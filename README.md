@@ -1,13 +1,13 @@
-# N-Layer Neural Network using Backpropagation
+# Neural Network using Backpropagation
 ![alt tag](https://github.com/nathansegan/mnist_neural_network/blob/master/scraps/number.jpg)
 
-A neural network to classify the handwritten digits 0-9 in the MNIST dataset.
+A neural network to classify the handwritten digits 0-9 in the MNIST dataset.  This network uses 784 inputs (for the 28x28 images of the handwritten digits), 30 neuron hidden layer, and 10 outputs.
 
 ## Data
 
 MNIST dataset stored in [data/mnist.pkl.gz](https://github.com/nathansegan/mnist_neural_network/tree/master/data).  Zipped up and stored in a pickled format.  See [mnist_loader.py](https://github.com/nathansegan/mnist_neural_network/blob/master/src/mnist_loader.py) comments to learn more.
 
-Network weights and biases can be saved to and loaded from files in a pickled format using `save()` and ` load()` functions.  Weights and biases are saved into [data/weights_file](https://github.com/nathansegan/mnist_neural_network/tree/master/data) and [data/biases_file](https://github.com/nathansegan/mnist_neural_network/tree/master/data).
+Network weights can be saved to and loaded from a file in a pickled format using `save()` and ` load()` functions.  Weights are saved into [data/weights_file](https://github.com/nathansegan/mnist_neural_network/tree/master/data).
 
 ## Dependencies
 
@@ -54,20 +54,16 @@ $ python
 
 
 #### Instantiate a network 
-Note: If you intend to load a network, make sure to instantiate a network of the same size as what is to be loaded.  Default shown below
 
 ```python
 >>> network = neural_net.Net([784, 30, 10])
 ```
 
-Each index in the array input represents a layer in the network with the first and last representing the input and output layer respectively.  Therefore, the above example represent a three layer network with 784 inputs (28x28 images), a 30 neuron hidden layer, and an output layer (digits 0-9).  Below is another example using two hidden layers of size 20 and 30.
+Each index in the array input represents a layer in the network with the first and last representing the input and output layer respectively.  Therefore, the above example represent a three layer network with 784 inputs (28x28 images), a 30 neuron hidden layer, and an output layer (digits 0-9).  For now, this is the only network design that works because the layers are hardcoded in, but it will soon be abstracted to an n-layer network where you can use a network design like below
 
 ```python
 >>> network = neural_net.Net([784, 20, 30, 10])
 ```
-
-Note: To imagine inputs, the network size can only be 3 for now (input, 1 hidden layer, output).  Will be expanded soon to accomodate n-layer.
-
 
 #### From here, you can load a saved network or you can train `network` from scratch. To load a previously saved network
 
@@ -75,14 +71,13 @@ Note: To imagine inputs, the network size can only be 3 for now (input, 1 hidden
 >>> network.load()
 ```
 
-
 #### Train `network` with a single pass through the dataset using `training_data` and a learning rate 
 
 ```python
 >>> network.train(training_data, 3.0)
 ```
 
-Note: I have gotten up to a 92.5% success rate on `test_data` with enough training with current implementation.  Improvements coming soon.
+Note: Training takes O(n^2) time now (a really long time for the whole data set) because I wanted to be very explicit about how errors and weights were being calculated.  I did this so that it follows the backpropagation process explained below very closely and clearly.  This makes it easy for people to see exactly what happening without getting confused by any vector/matrix math.  I may create a new project for a more efficient version, because I like this as proof of concept and learning tool.
 
 #### Test the accuracy of `network` against `test_data` using
 
@@ -100,7 +95,7 @@ This is like asking `network` the question
 >>> network.imagine(3)
 ```
 
-![alt tag](https://github.com/nathansegan/mnist_neural_network/blob/master/scraps/3.png)
+![alt tag](https://github.com/nathansegan/mnist_neural_network/blob/master/scraps/number_3.png)
 
 Think of the output like a heatmap that indicates what pixels are most important in differentiating a given digit from any other digit.
 
@@ -200,10 +195,11 @@ W+_ΩC = W_ΩC + η * δ_C * in_Ω
 ## Solving for inputs
 > "Hey, I have trained you to be able to classify a 3.  Now, I'm curious, what do you think a 3 looks like?".
 
-Note: Assuming a trained network with weights, biases, and desired outputs provided.
+Note: Assuming a trained network and desired outputs provided.
 
-To be completed soon...
-
+```math
+Process: to be completed soon...
+```
 
 # Credits
 
