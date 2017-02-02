@@ -195,11 +195,26 @@ W+_ΩC = W_ΩC + η * δ_C * in_Ω
 ## Solving for inputs
 > "Hey, I have trained you to be able to classify a 3.  Now, I'm curious, what do you think a 3 looks like?".
 
-Note: Assuming a trained network and desired outputs provided.
+Note: Assuming a trained network and desired outputs provided.  Output provided as a vector of 0s and 1s.  For example: [0,0,0,1,0,0,0,0,0,0] is the output for a 3.  Below math is for network example above, but can be applied more generally.
 
+Note: This math is not entirely correct but seems to be giving some reasonable results.  Also, `in_A, in_B, in_C` refers to the reverse input into a because this whole process is taking the desired output and passing it backwards to solve for inputs.
+
+#### Multiply the desired output by the output layer weights
 ```math
-Process: to be completed soon...
+in_A = out_α * W_Aα + out_β * W_Aβ
+in_B = out_α * W_Bα + out_β * W_Bβ
+in_C = out_α * W_Cα + out_β * W_Cβ
 ```
+
+#### Multiply `in_A, in_B, in_C` by each hidden layer weight
+```math
+Ω = in_A * W_ΩA + in_B * W_ΩB + in_C * W_ΩC
+λ = in_A * W_λA + in_B * W_λB + in_C * W_λC
+```
+
+Now, to test your imagined input, feed the input back through the network and see if you classify it correctly!
+
+Note: Don't forget to normalize inputs once you've solved for them, or else it will just look like noise!
 
 # Credits
 
