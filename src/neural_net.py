@@ -1,115 +1,114 @@
+import itertools
 import numpy as np
 import random
 import pickle
 import Image
 import time
 
-#np.seterr(all='ignore')
+np.seterr(all='ignore')
 
 class Net(object):
 
+	# sizes = [784, 30, 10] for mnist data
+	# 784 inputs for the 28x28 images
+	# 30 neuron hidden layer
+	# 10 outputs to classify as 0-9
 	def __init__(self, sizes):
-		self.sizes = sizes
-		self.num_layers = len(sizes)
+		self.outputs = []
 		self.biases = [np.random.randn(y, 1) for y in sizes[1:]]
 		self.weights = [np.random.randn(y,x) for x, y in zip(sizes[:-1], sizes[1:])]
-		# biases[0].shape = (30, 1) -- biases[1].shape = (10, 1)
-		# weights[0].shape = (30, 784) -- weights[1].shape = (10, 30)
 		
-	def feedforward(self, a):
-        # Return the output of the network if 'a' is input
-        # where a is the vector of activations
-		for b, w in zip(self.biases, self.weights):
-			a = self.sigmoid(np.dot(w, a))
-		return a
+	def feedforward(self, inputs):
+        # calculate input to hidden layer neurons
+		in_hlayer = np.dot(self.weights[0], inputs)
+		
+		# feed inputs of hidden layer neurons through the activation function
+		out_hlayer = np.array([self.sigmoid(z) for z in in_hlayer]).reshape(30,)
+		
+		# keep track of outputs for use in reverse pass during the learning process
+		self.outputs = out_hlayer
+
+		# multiply the hidden layer outputs by the corresponding weights to calculate the inputs to the output layer neurons
+		in_olayer = np.dot(self.weights[1], out_hlayer.transpose())
+
+		# feed inputs of output layer neurons through the activation function
+		out_olayer = np.array([self.sigmoid(z) for z in in_olayer])
+		
+		# return the vector of outputs from the output layer
+		return out_olayer
 
 	def train(self, training_data, test_data, learning_rate):
-		# shuffle data to minimize potential for overfit
+		# shuffle data to minimize potential for overfit (not really a problem here, but good practice)
 		random.shuffle(training_data)
 		
 		# loop through entire set of training data
 		for training_example in training_data:
 			
-			inputs, target = training_example
+			# grab inputs and target value from given example
+			inputs, target_raw = training_example
 			
-			# Forward Pass
+			# this is flatter this target array from shape (10,1) to (10,)
+			target = list(itertools.chain.from_iterable(target_raw))
 			
-			# calculate input to hidden layer neurons
-			in_hlayer = np.dot(self.weights[0], inputs)
-			
-			# Feed inputs of hidden layer neurons through the activation function
-			out_hlayer = np.array([self.sigmoid(z) for z in in_hlayer]).reshape(30,)
+			# run backpropagation algorithm to do the learning
+			self.do_backprop(inputs, target, learning_rate)
 
-			# Multiply the hidden layer outputs by the corresponding weights to calculate the inputs to the output layer neurons
-			in_olayer = np.dot(self.weights[1], out_hlayer.transpose())
-
-			# Feed inputs of output layer neurons through the activation function
-			out_olayer = np.array([self.sigmoid(z) for z in in_olayer])
-			
-			# Reverse Pass			
-			
-			# Calculate errors of output neurons
-			error_olayer = np.multiply(np.multiply(out_olayer, np.subtract(np.add(np.zeros((10,)), 1.0), out_olayer)), np.subtract(target[0], out_olayer))
-			
-			# Change output layer weights	
-			for weight in range(0, 9):	
-				for neuron in range(0, 29):
-					self.weights[1][weight][neuron] = self.weights[1][weight][neuron] + learning_rate * error_olayer[weight] * out_hlayer[neuron]
-
-			# backprop hidden layer error
-			error_hlayer = np.zeros((30,))
-			for weight in range(0, 9):
-				for neuron in range(0, 29):
-					total = 0
-					for x,y in zip(error_olayer, self.weights[1][weight]):
-						total += x+y
-					error_hlayer[neuron] = out_hlayer[neuron] * (1 - out_hlayer[neuron]) * total
-
-			# change hidden layer weights
-			for weight in range(0, 783):
-				for neuron in range(0, 29):
-						self.weights[0][neuron][weight] = self.weights[0][neuron][weight] + learning_rate * error_hlayer[neuron] * inputs[weight]
-
-			self.test_c(test_data)
-			
-
-	def backprop(self, image, target):
-		bias_gradient = [np.zeros(b.shape) for b in self.biases]
-		weight_gradient = [np.zeros(w.shape) for w in self.weights]
+	def do_backprop(self, inputs, target, learning_rate):
+		# Forward Pass
 		
-		# feed forward
-		activation = image
-		activations = [image] # list to store activations layer by layer
-		zs = [] # list to store z vectors, layer by layer
-		for b, w in zip(self.biases, self.weights):
-			z = np.dot(w, activation)+b
-			zs.append(z)
-			activation = self.sigmoid(z)
-			activations.append(activation)
+		output = self.feedforward(inputs)
 		
-		#backward pass
-		delta = self.cost_derivative(activations[-1], target) * self.sigmoid_derivative(zs[-1])
-		bias_gradient[-1] = delta
-		weight_gradient[-1] = np.dot(delta, activations[-2].transpose())
+		# Reverse Pass
 		
-		for l in xrange(2, self.num_layers):
-			z = zs[-l]
-			delta = np.dot(self.weights[-l+1].transpose(), delta) * self.sigmoid_derivative(z)
-			bias_gradient[-l] = delta
-			weight_gradient[-l] = np.dot(delta, activations[-l-1].transpose())
-		return (bias_gradient, weight_gradient)
+		# calculate errors of output neurons
+		error_olayer = (target - output) * output * (1 - output)
+		
+		# change output layer weights
+		for j in range(0,9):
+			for i in range(0,29):
+				self.weights[1][j][i] = self.weights[1][j][i] + (learning_rate * error_olayer[j] * self.outputs[i])
+
+		# calculate hidden layer errors
+		error_hlayer1 = np.zeros((30,))
+		for j in range(0,29):
+			for i in range(0,9):
+				error_hlayer1[j] = error_hlayer1[j] + error_olayer[i] * self.weights[1][i][j]
+		error_hlayer = self.outputs * (1 - self.outputs) * error_hlayer1
+		
+		# change hidden layer weights
+		for j in range(0,29):
+			for i in range(0,783):
+				self.weights[0][j][i] = self.weights[0][j][i] + (3.0 * error_hlayer[j] * inputs[i])
 	
+	# TODO: internal error? skipped passing through the neuron? Still looks to be working to some extent...
 	def imagine(self, x):
+		# convert x to output vector
 		output = np.zeros((10))
 		output[x] = 1
-		h_layer = np.dot(output, self.weights[1])
-		# hidden layer inverse sigmoid = learning_rate * (activations - target) * (sigmoid(z)) * (1 - sigmoid(z))
-		h_layer_inv_sig = np.array([3.0 * self.cost_derivative(i, output) * self.sigmoid_derivative(i) for i in h_layer])
-		input_layer = np.dot(h_layer_inv_sig.transpose(), self.weights[0])
-		#input_layer_slim = [x[0] for x in input_layer]
-		#self.evaluate_one(input_layer.transpose(), x)
-		#print "{0}".format(len(input_layer_slim))
-		#print "{0}".format(test_data.shape)
+		
+		# multiply outputs by weights
+		in_h_layer = np.zeros((30,))
+		for j in range(0,29):
+			for i in range(0,9):
+				in_h_layer[j] = in_h_layer[j] + self.weights[1][i][j] * output[i]
+		
+		# multiply the reverse output of the hidden layer neurons by each weight and sum at input to recover input
+		inputs = np.zeros((784))
+		for i in range(0,29):
+			for j in range(0,783):
+				inputs[j] = inputs[j] + self.weights[0][i][j] * in_h_layer[i]
+		
+		# feed imagined inputs through network and compare
+		best = self.feedforward(inputs)
+		best_guess = np.argmax(best)
+		best_value = best[best_guess]
+		print "Fed the imagined {0} through the network and got a {1}".format(x, best_guess)
+		left = np.delete(best, best_guess)
+		second_best = left[np.argmax(left)]
+		print "Second best guess was a {0}".format(np.argmax(left))
+		print "Best guess was {0}% better than second best guess".format(((best_value - second_best) * 100.0) / second_best)
+		
+		# create image
 		im = Image.new("RGB", (28, 28), "white")
 		im.mode = "L"
 		pix = im.load()
@@ -118,12 +117,12 @@ class Net(object):
 		y = 0
 		x_min = 0
 		x_max = 0
-		for i in input_layer[0]:
+		for i in inputs:
 			if (i < x_min):
 				x_min = i
 			if i > x_max:
 				x_max = i
-		for i in input_layer[0]:
+		for i in inputs:
 			j = int(((i) / (x_max - x_min)) * 255.0)
 			pix[x,y] = (j, j, j)
 			x += 1
@@ -132,37 +131,20 @@ class Net(object):
 				y += 1
 		im.show()
 	
-	def cost_derivative(self, output_activations, target):
-		# return vector of partial derivatives of cost function relative to output
-		return (output_activations - target)
 	
 	def sigmoid(self, z):
     	# sigmoid activation function
 		return 1.0 / (1.0 + np.exp(-z))
 
-	def sigmoid_derivative(self, z):
-    	# sigmoid derivative
-		return self.sigmoid(z) * (1 - self.sigmoid(z))
-
 	def evaluate(self, test_data):
+		# argmax takes the best guess of the output, then we tuple it into an array with the target for each test sample
 		test_results = [(np.argmax(self.feedforward(x)), y) for (x, y) in test_data]
+		# compare the best guess with the target and add up the right ones
 		return sum(int(x == y) for (x, y) in test_results)
-		
-	def evaluate_one(self, test_data, x):
-		#return np.argmax(self.feedforward(test_data)) == x 
-		print"{0}".format()
 	
 	def test(self, test_data):
+		# print as a percentage
 		print "{0}% correct!".format((float(self.evaluate(test_data)) / float(len(test_data))) * 100.0)
-		
-	def test_c(self, test_data):
-		a = []
-		out = []
-		for z in np.dot(test_data[0], self.weights[0]):
-			a.append(self.sigmoid(z))
-		for z in np.dot(a, self.weights[1]):
-			out.append(self.sigmoid(z))
-		
 	
 	def save(self):
 		with open('../data/weights_file', 'wb') as wf:
