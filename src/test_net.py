@@ -19,7 +19,7 @@ net = neural_net.Net([784, 30, 10])
 net.load()
 
 # solve for inputs
-net.imagine(6)
+net.imagine(3)
 
 # test the trained network
 #net.test(test_data)
