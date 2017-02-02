@@ -12,8 +12,9 @@ for i in range(0,10000):
 # neural_net.Net will only accept [784, 30, 10] -- will not work otherwise
 net = neural_net.Net([784, 30, 10])
 
+# subset used to save time because it takes forever O(n^2) to train
 # pass in subset of training data and learning rate
-#net.train(training_data_subset, test_data, .1)
+#net.train(training_data_subset, .3)
 
 # load saved network
 net.load()

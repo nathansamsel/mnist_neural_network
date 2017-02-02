@@ -37,7 +37,7 @@ class Net(object):
 		# return the vector of outputs from the output layer
 		return out_olayer
 
-	def train(self, training_data, test_data, learning_rate):
+	def train(self, training_data, learning_rate):
 		# shuffle data to minimize potential for overfit (not really a problem here, but good practice)
 		random.shuffle(training_data)
 		
@@ -108,7 +108,7 @@ class Net(object):
 		print "Second best guess was a {0}".format(np.argmax(left))
 		print "Best guess was {0}% better than second best guess".format(((best_value - second_best) * 100.0) / second_best)
 		
-		# create image
+		# create image based off of inputs
 		im = Image.new("RGB", (28, 28), "white")
 		im.mode = "L"
 		pix = im.load()
